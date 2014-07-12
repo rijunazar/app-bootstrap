@@ -25,6 +25,7 @@
     "es5-shim": "~4.0.0",
     "html5shiv": "~3.7.2",
     "json3": "~3.3.2",
-    "bootstrap-sass-official": "~3.2.0"
+    "bootstrap-sass-official": "~3.2.0",
+    "bootstrap": "https://github.com/angular-ui/bootstrap.git#0.11.0"
   }
 }
