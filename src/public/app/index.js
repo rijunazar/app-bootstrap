@@ -1,2 +1,2 @@
 'use strict';
-var vendor = require('../common/vendor');
+var vendor = require('../common');
