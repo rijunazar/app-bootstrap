@@ -1,10 +1,10 @@
 {
-  "name": "expressYourSelfie",
-  "version": "0.0.0",
+  "name": "app-bootstrap",
+  "version": "0.0.1",
+  "description": "Bootstrap repository for express-angular app",
   "authors": [
     "rijunazar <rinzar@gmail.com>"
   ],
-  "description": "Expressions through selfie",
   "main": "index.js",
   "moduleType": [
     "amd",

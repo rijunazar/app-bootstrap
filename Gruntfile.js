@@ -1,45 +1,49 @@
 module.exports = function (grunt) {
+    'use strict';
+    var remapify = require('remapify');
+
     grunt.initConfig({
         paths: {
-            source: './src',
-            webroot: 'src/public',
-            js: '<%=paths.webroot %>/app',
-            assets: '<%=paths.webroot %>/assets',
-            lib: '<%=paths.webroot %>/common',
-            dist: '<%=paths.webroot %>/build'
+            webRoot: 'src/public',
+            js: 'app/**/*.js', //relative to webRoot
+            assets: '<%=paths.webRoot %>/assets',
+            lib: '<%=paths.webRoot %>/common',
+            dist: '<%=paths.webRoot %>/build'
         },
         browserify: {
+            options: {
+                preBundleCB: function (b) {
+                    b.plugin(remapify, [{
+                        src: './**/*.js', // glob for the files to remap
+                        expose: 'common',
+                        cwd: 'src/public/common'
+                    }]);
+                },
+                'transform': [
+                    'debowerify',
+                    'deglobalify',
+                    'deamdify'
+                ]
+            },
             app: {
                 files: [{
-                    cwd: '.',
+                    cwd: '<%=paths.webRoot %>',
                     expand: true,
-                    src: ['<%=paths.js %>/**/*.js'],
+                    src: ['<%=paths.js %>'],
                     dest: '<%=paths.dist %>',
                     ext: '.js',
                     extDot: 'first'
                 }],
                 options: {
-                    'transform': [
-                        'debowerify',
-                        'deglobalify',
-                        'deamdify'
-                    ],
                     'external': [
-                        '<%=paths.lib %>/index.js'
+                        '<%=paths.lib %>/lib.js'
                     ],
                     watch: true
                 }
             },
             lib: {
                 src: '<%=paths.lib %>/index.js',
-                dest: '<%=paths.dist %>/lib.js',
-                options: {
-                    'transform': [
-                        'debowerify',
-                        'deglobalify',
-                        'deamdify'
-                    ]
-                }
+                dest: '<%=paths.dist %>/lib.js'
             }
         },
         compass: {
@@ -51,16 +55,23 @@ module.exports = function (grunt) {
                 importPath: ['bower_components/bootstrap-sass-official/assets/stylesheets']
             },
             dev: {}
-        }
+        },
+        clean: ['<%=paths.dist %>']
     });
 
 
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-contrib-clean');
 
     grunt.registerTask('default', [
         'browserify:app',
         'browserify:lib',
         'compass:dev'
+    ]);
+
+    grunt.registerTask('rebuild', [
+        'clean',
+        'default'
     ]);
 };
